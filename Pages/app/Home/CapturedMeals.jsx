@@ -31,7 +31,7 @@ function CapturedMeals({ navigation, route }) {
     state: true,
     location: "",
   });
-  const userCountry = JSON.parse(userProfileData.country);
+  const userCountry = userProfileData?.country ? JSON.parse(userProfileData.country) : {};
   const { currencyCode, currencySymbol } = getLocales()[0];
 
   // function to get a random number

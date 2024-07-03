@@ -127,6 +127,7 @@ function AddNewFood({ navigation, route }) {
     };
 
     if (isSaveMeal) recordCustomeMeal(dta, foodType);
+    console.log("FoodType: ", foodType);
     navigation.navigate("CapturedMeal", { occasion: foodType });
 
     // save custom meal to db

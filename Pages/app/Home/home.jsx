@@ -165,37 +165,19 @@ function Home({ navigation }) {
             <VStack w="55%" ml={7}>
               <Text style={styles.activitiesTitle}>Daily Calories</Text>
               <HStack w={"100%"} justifyContent={"space-between"} alignItems="flex-end">
-                <TouchableOpacity
-                  onPress={() =>
-                    navigation.navigate("InsightsStack", {
-                      nutrient: "protein",
-                    })
-                  }
-                >
+                <TouchableOpacity onPress={() => {}}>
                   <Center>
                     <ProteinHome />
                     <Text style={styles.activitiesText}>Protein</Text>
                   </Center>
                 </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() =>
-                    navigation.navigate("InsightsStack", {
-                      nutrient: "carbs",
-                    })
-                  }
-                >
+                <TouchableOpacity onPress={() => {}}>
                   <Center>
                     <Carbs />
                     <Text style={styles.activitiesText}>Carbs</Text>
                   </Center>
                 </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() =>
-                    navigation.navigate("InsightsStack", {
-                      nutrient: "fat",
-                    })
-                  }
-                >
+                <TouchableOpacity onPress={() => {}}>
                   <Center>
                     <HomeFat />
                     <Text style={styles.activitiesText}>Fat</Text>

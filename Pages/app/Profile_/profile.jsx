@@ -600,10 +600,10 @@ function Profile({ navigation }) {
                   if (item.route == "deleteAccount") {
                     signOut();
                   }
-                  navigation.navigate(item.route, {
+                  else{navigation.navigate(item.route, {
                     actionType: item.title,
                     userProfileData: userProfileData,
-                  });
+                  });}
                   setEditActionSheet(false);
                 }}
               >
