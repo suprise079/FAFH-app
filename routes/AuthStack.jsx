@@ -10,7 +10,7 @@ import OnboardingComponent from "../Pages/auth/onBoarding";
 const Stack = createNativeStackNavigator();
 function AuthStack() {
   const { colors } = useTheme();
-  console.log("Running AuthStack")
+  console.log("Running AuthStack");
   return (
     <Stack.Navigator
       screenOptions={{
@@ -22,11 +22,7 @@ function AuthStack() {
         headerTransparent: true,
       }}
     >
-      <Stack.Screen
-        options={{ headerShown: false }}
-        name="Welcome"
-        component={Welcome}
-      />
+      <Stack.Screen options={{ headerShown: false }} name="Welcome" component={Welcome} />
       <Stack.Screen
         name="Onboarding"
         options={{

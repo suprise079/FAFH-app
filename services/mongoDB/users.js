@@ -91,6 +91,7 @@ export const getWater = async (setWater, water) => {
     .then((response) => response.json())
     .then((result) => {
       if (result.success) {
+        console.log("GET WATER RESULT: ", JSON.stringify(result));
         setWater({
           ...water,
           current: result.data.water,

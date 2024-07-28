@@ -27,7 +27,7 @@ import UploadProfilePic from "./uploadProfilePic";
 import { ProfileContext } from "./profileStack";
 import ToastComponent from "../../../services/CustomToast";
 import AuthContext from "../../../hooks/context";
-import { updateUser } from "../../../services/mongoDB/users";
+import { getUser, updateUser } from "../../../services/mongoDB/users";
 import { DatePickerComponent } from "../../auth/register";
 import moment from "moment";
 
@@ -38,14 +38,14 @@ import CountryFlag from "react-native-country-flag";
 function EditProfile({ navigation, route }) {
   const { colors } = useTheme();
   const { actionType } = route.params;
-  console.log("route: " + route);
   const [openImagePicker, setOpenImagePicker] = React.useState(false);
   const { profilePicture } = React.useContext(ProfileContext);
   const toast = useToast();
-  const { userProfileData, setUserProfileData, getUser } = React.useContext(AuthContext);
+  const { userProfileData, setUserProfileData } = React.useContext(AuthContext);
+  const [fieldsToChange, setFieldsToChange] = useState({});
 
   console.log("userProfileData: ", userProfileData);
-  //form states
+  // form states
   const initialValues = {
     // current user's name
     name: userProfileData?.fullName,
@@ -66,6 +66,41 @@ function EditProfile({ navigation, route }) {
     height: Yup.number().typeError("The Height must be a number").min(1, "Must be at least 1"),
     weight: Yup.number().typeError("The Weight must be a number").min(1, "Must be at least 1"),
   });
+
+  const onTextChange = (field, value) => {
+    console.log("Field: ", field, "Value: ", value);
+    setFieldsToChange({ ...fieldsToChange, [field]: value });
+  };
+
+  const onFormSubmit = async (values, formikActions) => {
+    let finalVlaues = { ...fieldsToChange };
+    if (values.country != initialValues.country) {
+      finalVlaues = { ...finalVlaues, country: values.country };
+    }
+    if (values.doB != initialValues.doB) {
+      finalVlaues = { ...finalVlaues, dateOfBirth: values.doB };
+    }
+    console.log("Fields to change: ", finalVlaues);
+    formikActions.setSubmitting(true);
+    updateUser(finalVlaues).then(() => {
+      getUser().then((res) => {
+        console.log("User data after update: ", JSON.stringify(res));
+        setUserProfileData(res);
+        formikActions.setSubmitting(false);
+
+        toast.show({
+          placement: "top",
+          render: () => (
+            <ToastComponent
+              state={true ? "Success" : "Error"}
+              message={true ? "Profile Updated Successfully !" : res}
+            />
+          ),
+        });
+        navigation.goBack();
+      });
+    });
+  };
 
   useEffect(() => {
     return () => {
@@ -138,32 +173,8 @@ function EditProfile({ navigation, route }) {
           <Formik
             initialValues={initialValues}
             validationSchema={validationSchema}
-            onSubmit={(values, formikActions) => {
-              let fieldsToChange = {};
-              for (const key in values) {
-                // this only changes the values that are different from the current user's values
-                if (values[key] !== userProfileData[key]) {
-                  fieldsToChange[key] = values[key];
-                }
-              }
-              formikActions.setSubmitting(true);
-              updateUser(fieldsToChange).then(() => {
-                getUser(setUserProfileData).then(() => {
-                  formikActions.setSubmitting(false);
-
-                  toast.show({
-                    placement: "top",
-                    render: () => (
-                      <ToastComponent
-                        state={true ? "Success" : "Error"}
-                        message={true ? "Profile Updated Successfully !" : res}
-                      />
-                    ),
-                  });
-                  navigation.goBack();
-                });
-              });
-            }}
+            handleChange={(field, value) => onTextChange(field, value)}
+            onSubmit={(values, formikActions) => onFormSubmit(values, formikActions)}
           >
             {({ handleChange, setFieldValue, handleBlur, handleSubmit, values, touched, errors, isSubmitting }) => {
               const { name, profession, doB, gender, weight, height, country } = values;
@@ -176,6 +187,7 @@ function EditProfile({ navigation, route }) {
                     <Input
                       value={name}
                       onChangeText={handleChange("name")}
+                      onEndEditing={(e) => onTextChange("fullName", e.nativeEvent.text)}
                       onBlur={handleBlur("name")}
                       p={2}
                       placeholder="How should we call you?"
@@ -193,6 +205,7 @@ function EditProfile({ navigation, route }) {
                     <Input
                       value={profession}
                       onChangeText={handleChange("profession")}
+                      onEndEditing={(e) => onTextChange("profession", e.nativeEvent.text)}
                       onBlur={handleBlur("profession")}
                       p={2}
                       placeholder="Your profession"
@@ -219,8 +232,9 @@ function EditProfile({ navigation, route }) {
                         borderRadius: "20",
                       }}
                       mt={1}
-                      onValueChange={(itemValue) => {
-                        setFieldValue("gender", itemValue);
+                      onValueChange={(value) => {
+                        setFieldValue("gender", value);
+                        onTextChange("gender", value);
                       }}
                     >
                       <Select.Item label="Male" value="Male" />
@@ -248,7 +262,10 @@ function EditProfile({ navigation, route }) {
                       </FormControl.Label>
                       <Input
                         value={weight}
-                        onChangeText={handleChange("weight")}
+                        onChangeText={(text) => {
+                          setFieldValue("weight", text);
+                          onTextChange("weight", text);
+                        }}
                         onBlur={handleBlur("weight")}
                         placeholder="0.0"
                         fontWeight={"300"}
@@ -262,8 +279,9 @@ function EditProfile({ navigation, route }) {
                               placeholderTextColor={"white"}
                               selectedValue={values.weightUnit}
                               defaultValue={values.weightUnit}
-                              onValueChange={(itemValue) => {
-                                setFieldValue("weightUnit", itemValue);
+                              onValueChange={(value) => {
+                                setFieldValue("weightUnit", value);
+                                onTextChange("weightUnit", value);
                               }}
                               onBlur={handleBlur("weightUnit")}
                               _selectedItem={{
@@ -288,7 +306,10 @@ function EditProfile({ navigation, route }) {
                       </FormControl.Label>
                       <Input
                         value={height}
-                        onChangeText={handleChange("height")}
+                        onChangeText={(value) => {
+                          setFieldValue("height", value);
+                          onTextChange("height", value);
+                        }}
                         onBlur={handleBlur("height")}
                         placeholder="0.0"
                         fontWeight={"300"}
@@ -302,8 +323,9 @@ function EditProfile({ navigation, route }) {
                               placeholderTextColor={"white"}
                               selectedValue={values.heightUnit}
                               defaultValue={values.heightUnit}
-                              onValueChange={(itemValue) => {
-                                setFieldValue("heightUnit", itemValue);
+                              onValueChange={(value) => {
+                                setFieldValue("heightUnit", value);
+                                onTextChange("heightUnit", value);
                               }}
                               onBlur={handleBlur("heightUnit")}
                               _selectedItem={{
@@ -371,7 +393,6 @@ const SelectCountry = ({ country, setFieldValue }) => {
   useEffect(() => {
     let filteredCountries = countries.filter((country) => validCountries.includes(country.name));
     setCountriesToBeDisplayed(filteredCountries);
-    console.log(filteredCountries);
   }, []);
 
   const search = (text) => {
@@ -391,9 +412,7 @@ const SelectCountry = ({ country, setFieldValue }) => {
       }}
       mt={1}
       onValueChange={(itemValue) => {
-        console.log("item value: " + itemValue);
         let cty = countriesToBeDisplayed.filter((item) => item.name == itemValue)[0];
-        console.log("Country: " + JSON.stringify(cty));
         setDisplayValue(cty.name);
         setFieldValue("country", JSON.stringify(cty));
       }}

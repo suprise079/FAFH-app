@@ -40,6 +40,15 @@ import { getDailyInsights } from "../../../services/mongoDB/insightsData";
 function Home({ navigation }) {
   const { colors } = useTheme();
   const { height, width } = useWindowDimensions();
+  const [quote, setQuote] = useState({});
+  // Type of food ActionSheet variables
+  const [actionSheetVisible, setActionSheetVisible] = useState(false);
+  // Additional Information Modal
+  const [modalVisible, setModalVisible] = useState(false);
+  const { userProfileData } = useContext(AuthContext);
+  const { setMeals } = useContext(HomeContext);
+  const [tipsVisible, setTipsVisible] = useState(true);
+  const loca = getLocales();
   const [data, setData] = useState({
     labels: ["Protein", "Carbs", "Fat"], // optional
     data: [0, 0, 0],
@@ -51,17 +60,6 @@ function Home({ navigation }) {
     current: waterIntake.current * 360,
     goal: 6000,
   });
-  const [quote, setQuote] = useState({});
-  const loca = getLocales();
-
-  // Type of food ActionSheet variables
-  const [actionSheetVisible, setActionSheetVisible] = useState(false);
-
-  // Additional Information Modal
-  const [modalVisible, setModalVisible] = useState(false);
-  const { userProfileData } = useContext(AuthContext);
-  const { setMeals } = useContext(HomeContext);
-  const [tipsVisible, setTipsVisible] = useState(true);
 
   const calcBmi = () => {
     const heightInMeters = userProfileData?.height / 100;
@@ -128,10 +126,13 @@ function Home({ navigation }) {
   };
 
   useEffect(() => {
+    console.log("water intake: " + JSON.stringify(waterIntake));
     userFirstTime();
     getWater(setWaterIntake, waterIntake);
-    getDailyInsights(setData);
+    // getDailyInsights(setData);
     getDailyQoute(setQuote);
+    console.log("water intake: " + JSON.stringify(waterIntake));
+    console.log("Homepage userData: " + JSON.stringify(userProfileData));
     return () => {};
   }, []);
 

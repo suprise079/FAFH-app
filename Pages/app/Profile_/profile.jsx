@@ -120,15 +120,25 @@ function Profile({ navigation }) {
       return `${yyyy},${mm},${dd}`;
     }
   };
-  const getAge = (date) => {
-    if (date) {
-      let [yyyy, mm, dd] = date.split(",");
-      date = new Date(yyyy, mm - 1, dd);
-      var diff = Date.now() - date.getTime();
-      var age = new Date(diff);
-      return Math.abs(age.getUTCFullYear() - 1970);
+
+  function getAge(dateOfBirthString) {
+    // Parse the dateOfBirthString into a Date object
+    const dateOfBirth = new Date(dateOfBirthString);
+
+    // Get the current date
+    const today = new Date();
+
+    // Calculate age in years
+    let age = today.getFullYear() - dateOfBirth.getFullYear();
+    const monthDifference = today.getMonth() - dateOfBirth.getMonth();
+
+    // If the current month is before the birth month or it's the same month but the current day is before the birth day
+    if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < dateOfBirth.getDate())) {
+      age--;
     }
-  };
+
+    return age;
+  }
 
   const getBmiColorAndText = (bmi) => {
     return bmi < 17
@@ -393,7 +403,7 @@ function Profile({ navigation }) {
                       fontStyle: "italic",
                     }}
                   >
-                    {getAge(formatDate(userProfileData?.dateOfBirth))} Years
+                    {userProfileData?.dateOfBirth ? getAge(userProfileData.dateOfBirth) : "N/A"} Years
                   </Text>
                 </VStack>
               </HStack>
@@ -599,11 +609,12 @@ function Profile({ navigation }) {
                 onPress={() => {
                   if (item.route == "deleteAccount") {
                     signOut();
+                  } else {
+                    navigation.navigate(item.route, {
+                      actionType: item.title,
+                      userProfileData: userProfileData,
+                    });
                   }
-                  else{navigation.navigate(item.route, {
-                    actionType: item.title,
-                    userProfileData: userProfileData,
-                  });}
                   setEditActionSheet(false);
                 }}
               >

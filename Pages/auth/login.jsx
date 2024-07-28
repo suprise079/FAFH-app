@@ -46,7 +46,6 @@ function Login({ navigation }) {
     email: "",
     password: "",
   };
-  const [checked, setChecked] = useState(true);
 
   const handleCheckboxPress = () => {
     setChecked((prev) => {
@@ -57,7 +56,7 @@ function Login({ navigation }) {
   const handleSubmit = (data, formikActions) => {
     signIn({
       ...data,
-      stayLoggedIn: checked,
+      stayLoggedIn: true,
     }).then((res) => {
       formikActions.setSubmitting(false);
       setFeedback(res);
@@ -163,7 +162,7 @@ function Login({ navigation }) {
                     <FormControl.ErrorMessage>{touched.password && errors.password}</FormControl.ErrorMessage>
                   </FormControl>
 
-                  <Pressable onPress={handleCheckboxPress} w="40%" my={2} display="flex">
+                  {/* <Pressable onPress={handleCheckboxPress} w="40%" my={2} display="flex">
                     <Row alignItems={"center"}>
                       <Center w={5} h={5} m={1}>
                         <Checkbox value={checked} onValueChange={handleCheckboxPress} />
@@ -173,7 +172,7 @@ function Login({ navigation }) {
                         Remember Me
                       </Text>
                     </Row>
-                  </Pressable>
+                  </Pressable> */}
 
                   <Center>
                     <Button

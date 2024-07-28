@@ -62,7 +62,8 @@ export default function App() {
           console.log(token);
           return token;
         } else {
-          let userData = await getUser(setUserProfileData);
+          let userData = await getUser();
+          Console.log("Sign In userdata: " + userData);
           if (userData._id) {
             setUserProfileData(userData);
             dispatch({ type: "SIGN_IN", token });
@@ -84,10 +85,15 @@ export default function App() {
         if (token?.includes("Error")) {
           return token;
         } else {
-          await getUser(setUserProfileData);
+          let userData = await getUser();
+          setUserProfileData(userData);
+          console.log("Sign Up userdata: " + userData);
           dispatch({ type: "SIGN_UP", token });
           return "Success";
         }
+      },
+      resetPassword: async (email) => {
+        return await resetPassword(email);
       },
       googleSignIn: async () => {
         const token = await googleSignIn();

@@ -54,10 +54,8 @@ export const signUp = async (data) => {
       .then(async (res) => {
         token = res.user.uid;
         await mongoCreateUser(data, token);
-        if (data.stayLoggedIn) {
-          await SecureStore.setItemAsync("userToken", token);
-          await SecureStore.setItemAsync("userFirstTime", "true");
-        }
+        await SecureStore.setItemAsync("userToken", token);
+        await SecureStore.setItemAsync("userFirstTime", "true");
       })
       .catch((error) => {
         //will write code for error
@@ -81,6 +79,19 @@ export const signUp = async (data) => {
   // save it to secure store if user wants to stay logged in
   console.log("Signup token: " + token);
   return token;
+};
+
+export const resetPassword = async (email) => {
+  console.log("Callingreset method!");
+  console.log("Email to reset password: " + email);
+  //reset password
+  try {
+    await firebase.auth().sendPasswordResetEmail(email);
+    return "Success";
+  } catch (e) {
+    console.log("This is the error:", e);
+    return "Error";
+  }
 };
 
 export const signOut = async () => {

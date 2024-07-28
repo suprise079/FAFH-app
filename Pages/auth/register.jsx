@@ -49,6 +49,7 @@ function Register({ navigation }) {
   const AdditionalInfoRef = useRef(new Animated.Value(0)).current;
   const [isAdditionalInfoVisible, setAdditionalInfoVisible] = useState(false);
   const [AdditionalInfoLoading, setAdditionalInfoLoading] = useState(false);
+
   const showAdditionalInfo = () => {
     setAdditionalInfoLoading(true);
     Animated.spring(AdditionalInfoRef, {
@@ -468,6 +469,8 @@ export const DatePickerComponent = ({ handleSubmit, doB, setFieldValue }) => {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [color, setColor] = useState(colors["primary"]["600"]);
 
+  const [date, setDate] = useState(new Date());
+
   const showDatePicker = () => {
     setDatePickerVisibility(true);
   };
@@ -476,7 +479,9 @@ export const DatePickerComponent = ({ handleSubmit, doB, setFieldValue }) => {
   };
 
   const handleConfirm = (date) => {
-    setFieldValue("doB", moment(date).format("MMMM Do YYYY"));
+    setFieldValue("doB", date.toString());
+    setDate(date);
+    console.log("A date has been picked: ", date.toString());
     hideDatePicker();
   };
 
@@ -489,8 +494,8 @@ export const DatePickerComponent = ({ handleSubmit, doB, setFieldValue }) => {
         <Row>
           <Input
             isDisabled={true}
-            value={doB}
-            p={2}
+            value={date.toISOString().split("T")[0]}
+            px={2}
             _input={{ color: "black" }}
             fontWeight={"300"}
             fontSize={"md"}
@@ -508,7 +513,7 @@ export const DatePickerComponent = ({ handleSubmit, doB, setFieldValue }) => {
               setColor(colors["primary"]["600"]);
             }}
           >
-            <Foundation name="calendar" size={50} color={color} />
+            <Foundation name="calendar" size={40} color={color} />
           </Pressable>
         </Row>
       </FormControl>
@@ -516,6 +521,7 @@ export const DatePickerComponent = ({ handleSubmit, doB, setFieldValue }) => {
       <DateTimePickerModal
         themeVariant="light"
         isVisible={isDatePickerVisible}
+        value={date}
         mode="date"
         onConfirm={handleConfirm}
         onCancel={hideDatePicker}
