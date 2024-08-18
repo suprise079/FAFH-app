@@ -63,7 +63,6 @@ export default function App() {
           return token;
         } else {
           let userData = await getUser();
-          Console.log("Sign In userdata: " + userData);
           if (userData._id) {
             setUserProfileData(userData);
             dispatch({ type: "SIGN_IN", token });
@@ -148,9 +147,7 @@ export default function App() {
           setHasProfileChanged,
         }}
       >
-        {fontsLoaded ? (
-          <NavigationContainer>{userData.userToken == null ? <AuthStack /> : <AppStack />}</NavigationContainer>
-        ) : null}
+        {fontsLoaded ? <NavigationContainer>{userData.userToken == null ? <AuthStack /> : <AppStack />}</NavigationContainer> : null}
       </AuthContext.Provider>
     </NativeBaseProvider>
   );
