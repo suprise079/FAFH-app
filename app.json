@@ -15,7 +15,9 @@
       "fallbackToCacheTimeout": 0,
       "url": "https://u.expo.dev/0aa90a65-3182-4d0d-9999-6b78822d171e"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "app.foodlog.uj"
@@ -28,7 +30,10 @@
       },
       "package": "app.FoodLog.uj",
       "softwareKeyboardLayoutMode": "pan",
-      "permissions": ["android.permission.CAMERA", "android.permission.RECORD_AUDIO"]
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "favicon": "./assets/images/favicon.png"
@@ -50,12 +55,12 @@
         "expo-build-properties",
         {
           "android": {
-            "compileSdkVersion": 34,
+            "compileSdkVersion": 33,
             "targetSdkVersion": 34,
             "buildToolsVersion": "34.0.0"
           },
           "ios": {
-            "deploymentTarget": "13.0"
+            "deploymentTarget": "14.0"
           }
         }
       ],
@@ -68,10 +73,11 @@
             "buildToolsVersion": "34.0.0"
           },
           "ios": {
-            "deploymentTarget": "13.0"
+            "deploymentTarget": "14.0"
           }
         }
-      ]
+      ],
+      "expo-localization"
     ],
     "runtimeVersion": {
       "policy": "sdkVersion"
